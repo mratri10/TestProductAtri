@@ -25,9 +25,9 @@ export const fetch = (
   requestURL: String,
   parameters: any,
 ) => {
-    console.log("+++++++++++++ "+requestType+" "+requestURL+" "+JSON.stringify(parameters))
   var token = parameters.token;
   delete parameters.token;
+
   switch (requestType) {
     case GET:
       return new Promise((resolve, reject) => {
@@ -40,11 +40,9 @@ export const fetch = (
           },
         })
           .then(response => {
-            console.log("+++++++++++++ resolve "+JSON.stringify(response))
             resolve(response.data);
           })
           .catch(error => {
-            console.log("+++++++++++++ reject "+JSON.stringify(error))
             reject(error.response.data);
           });
       });

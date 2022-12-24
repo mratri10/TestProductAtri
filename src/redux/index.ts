@@ -1,10 +1,12 @@
 import { combineReducers } from "redux";
-import HomeReducer from "./homeReducer";
-import ProductReducer from "./productReducer";
+import WeatherDataReducer from "./weatherDataReducer";
+import WeatherForecastReducer from "./weatherForecastReducer";
+import LocationReducer from "./locationReducer";
 
 const rootReducer = combineReducers({
-    homeReducer: HomeReducer,
-    productReducer: ProductReducer
+    weatherReducer:WeatherDataReducer,
+    weatherForecastReducer:WeatherForecastReducer,
+    locationReducer:LocationReducer,
 });
 
 export type ApplicationState = ReturnType<typeof rootReducer>;

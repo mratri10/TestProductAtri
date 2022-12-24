@@ -1,18 +1,26 @@
 import * as React from 'react';
-import { Text, View } from 'react-native';
+import { PermissionsAndroid, Text, View } from 'react-native';
+import { getCurrentPosition } from 'react-native-geolocation-service';
 import { Provider } from 'react-redux';
 import { applyMiddleware, createStore } from 'redux';
 import thunk from 'redux-thunk';
-import { API_URL, setBaseURL } from './src/apis';
-import MyApp from './src/myapp';
+import { API_URL, API_WEATHER, setBaseURL } from './src/apis';
+import MyApp from './src/page/myapp';
 import rootReducer from './src/redux';
+
    
 const store = createStore(rootReducer, {}, applyMiddleware(thunk))
-setBaseURL(API_URL);
+setBaseURL(API_WEATHER);
 function App() {
-  return <Provider store={store}>
-    <MyApp/>
-  </Provider>
+  React.useEffect(()=>{
+   
+  },[])
+
+  return (
+    <Provider store={store}>
+      <MyApp/>
+    </Provider>
+  )
 }
 
 export default App

@@ -1,0 +1,1 @@
+export const APPID_WEATHER = "ecce5661eacec019a43a7a6f2cac058a"
