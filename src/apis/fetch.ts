@@ -28,6 +28,8 @@ export const fetch = (
   var token = parameters.token;
   delete parameters.token;
 
+  console.log(requestType, " "+requestURL)
+
   switch (requestType) {
     case GET:
       return new Promise((resolve, reject) => {
@@ -59,9 +61,11 @@ export const fetch = (
           }),
         })
           .then(response => {
+            console.log("berhasil")
             resolve(response.data);
           })
           .catch(error => {
+            console.log("why: "+error)
             reject(error.response.data);
           });
       });
@@ -78,9 +82,11 @@ export const fetch = (
           }),
         })
           .then(response => {
+            console.log("berhasil: ")
             resolve(response.data);
           })
           .catch(error => {
+            console.log("why: "+error)
             reject(error);
           });
       });

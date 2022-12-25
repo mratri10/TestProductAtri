@@ -1,113 +1,110 @@
-import { PermissionsAndroid } from "react-native";
-import Geolocation from "react-native-geolocation-service";
-import { fetch, GET } from "./apis";
-import { APPID_WEATHER } from "./constant";
-import { LOCATION_DATA_FAIL, LOCATION_DATA_LOADING, LOCATION_DATA_SUCCESS, WATHER_DAILY_FAIL, WATHER_DAILY_LOADING, WATHER_DAILY_SUCCESS, WATHER_DATA_FAIL, WATHER_DATA_LOADING, WATHER_DATA_SUCCESS, WATHER_FORECAST_FAIL, WATHER_FORECAST_LOADING, WATHER_FORECAST_SUCCESS } from "./constant/redux_constant";
 
+import { DELETE, fetch, GET, POST, PUT, UPDATE } from "./apis";
+import { DELETE_FAIL, DELETE_LOADING, DELETE_RESET, DELETE_SUCCESS, GET_DETAIL_FAIL, GET_DETAIL_LOADING, GET_DETAIL_RESET, GET_DETAIL_SUCCESS, GET_PRODUCT_FAIL, GET_PRODUCT_LOADING, GET_PRODUCT_RESET, GET_PRODUCT_SUCCESS, POST_FAIL, POST_LOADING, POST_SUCCESS, UPDATE_FAIL, UPDATE_LOADING, UPDATE_SUCCESS } from "./constant";
 
-  export const getDataWeather = (latitude:string, longitude:string) => {
+  export const getListProduct = ()=>{
     return async (dispatch: DispatchType, getState: any) => {
-      dispatch({type: WATHER_DATA_LOADING});
-      await fetch(GET, 'data/2.5/weather',{appid:APPID_WEATHER, lat:latitude, lon:longitude})
+      dispatch({type: GET_PRODUCT_LOADING});
+      await fetch(GET, 'product',{})
         ?.then(item => {
-          dispatch({type: WATHER_DATA_SUCCESS, payload: {
-            data:item as WeatherData,
-            loading:false,
-          } as WeatherDataEntity});
-        })
-        .catch(e => {
-            dispatch({type: WATHER_DATA_FAIL, payload: {
-                loading:false,
-                error:'Gagal Peroleh Data Cuaca',
-              } as WeatherDataEntity});
-        });
-    };
-  };
-
-  export const getForecastWeather = (latitude:string, longitude:string)=>{
-    return async (dispatch: DispatchType, getState: any) => {
-      dispatch({type: WATHER_FORECAST_LOADING});
-      await fetch(GET, 'data/2.5/forecast',{appid:APPID_WEATHER, lat:latitude, lon:longitude,})
-        ?.then(item => {
-          dispatch({type: WATHER_FORECAST_SUCCESS, payload: {
+          dispatch({type: GET_PRODUCT_SUCCESS, payload: {
             loading:false,
             data:item          
-          } as WeatherDetailEntity});
+          } as ProductsListEntity});
         })
         .catch(e => {
-            dispatch({type: WATHER_FORECAST_FAIL, payload: {
+            dispatch({type: GET_PRODUCT_FAIL, payload: {
                 loading:false,
                 error:'Gagal Peroleh Data Cuaca',
-              } as WeatherDetailEntity});
+              } as ProductsListEntity});
         });
     };
   }
-
-  export const getDailyWeather = (latitude:string, longitude:string)=>{
+  export const getResetProduct = ()=>{
     return async (dispatch: DispatchType, getState: any) => {
-      dispatch({type: WATHER_DAILY_LOADING});
-      await fetch(GET, 'data/2.5/forecast',{appid:APPID_WEATHER, lat:latitude, lon:longitude, exclude:'minutely'})
+      dispatch({type: GET_PRODUCT_RESET});
+    };
+  }
+
+  export const getDetailProduct = (id:string)=>{
+    return async (dispatch: DispatchType, getState: any) => {
+      dispatch({type: GET_DETAIL_LOADING});
+      await fetch(GET, 'product/'+id,{})
         ?.then(item => {
-          dispatch({type: WATHER_DAILY_SUCCESS, payload: {
-            data:item,
+          dispatch({type: GET_DETAIL_SUCCESS, payload: {
             loading:false,
-          } as WeatherDetailEntity});
+            data:item          
+          } as ProductsDetailEntity});
         })
         .catch(e => {
-            dispatch({type: WATHER_DAILY_FAIL, payload: {
+            dispatch({type: GET_DETAIL_FAIL, payload: {
                 loading:false,
                 error:'Gagal Peroleh Data Cuaca',
-              } as WeatherDetailEntity});
+              } as ProductsDetailEntity});
         });
     };
   }
 
-  export const getDataLocation = () => {
+  export const resetDetailProduct = ()=>{
     return async (dispatch: DispatchType, getState: any) => {
-      dispatch({type: LOCATION_DATA_LOADING});
+      dispatch({type: GET_DETAIL_RESET});
+      dispatch({type: DELETE_RESET});
+    };
+  }
 
-      const requestLocationPermission = async()=>{
-        try {
-          const granted = await PermissionsAndroid.request(
-            PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,{
-              title:'Meminta Izin Lokasi',
-              message:'Bolehkah Kami Akses Lokasi Kamu',
-              buttonNeutral:"Tanya Saya Nanti",
-              buttonPositive:'Ya',
-              buttonNegative:'Tidak'
-            }
-          )
-          if(granted === 'granted'){
-            return true
-          }else{
-            return false
-          }
-        } catch (error) {
-          return fail
-        }
-      }
-        const result = requestLocationPermission();
-    
-        result.then(async res=>{
-    
-          if(res){
-            Geolocation.getCurrentPosition(
-              position =>{
-                dispatch({type:LOCATION_DATA_SUCCESS, payload:{
-                  loading:false,
-                  location:position,
-                }as LocationDataEntity})
-              },error =>{
-                dispatch({type: LOCATION_DATA_FAIL, payload: {
-                  loading:false,
-                  error:'Gagal Peroleh Lokasi Pengguna',
-                } as LocationDataEntity}); 
-              },
-              {enableHighAccuracy:true, timeout:1500, maximumAge:10000}
-            )
-          }
+  export const deleteProduct = (id:string)=>{
+    return async (dispatch: DispatchType, getState: any) => {
+      dispatch({type: DELETE_LOADING});
+      await fetch(DELETE, 'product/'+id,{})
+        ?.then(item => {
+          dispatch({type: DELETE_SUCCESS, payload: {
+            loading:false,      
+            isDelete:true
+          } as ProductsDeleteEntity});
+        })
+        .catch(e => {
+            dispatch({type: DELETE_FAIL, payload: {
+                loading:false,
+                error:'Gagal Peroleh Data Cuaca',
+              } as ProductsDeleteEntity});
         });
-      }
-    
-  };
-  
+    };
+  }
+
+  export const updateProduct = (id:string, data:TypeProductItem)=>{
+    return async (dispatch: DispatchType, getState: any) => {
+      dispatch({type: UPDATE_LOADING});
+      await fetch(PUT, 'product/'+id,data)
+        ?.then(item => {
+          dispatch({type: UPDATE_SUCCESS, payload: {
+            loading:false,      
+            isUpdate:true
+          } as ProductsUpdateEntity});
+        })
+        .catch(e => {
+            dispatch({type: UPDATE_FAIL, payload: {
+                loading:false,
+                error:'Gagal Peroleh Data Cuaca',
+              } as ProductsUpdateEntity});
+        });
+    };
+  }
+
+  export const postProduct = (data:TypeProductItem)=>{
+    return async (dispatch: DispatchType, getState: any) => {
+      dispatch({type: POST_LOADING});
+      await fetch(POST, 'product',data)
+        ?.then(item => {
+          dispatch({type: POST_SUCCESS, payload: {
+            loading:false,      
+            isUPDATE:true
+          } as ProductsPostEntity});
+        })
+        .catch(e => {
+            dispatch({type: POST_FAIL, payload: {
+                loading:false,
+                error:'Gagal Peroleh Data Cuaca',
+              } as ProductsPostEntity});
+        });
+    };
+  }
